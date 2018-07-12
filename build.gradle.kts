@@ -8,22 +8,21 @@ allprojects {
     apply {
         plugin("base")
     }
-}
 
-subprojects {
-    task("buildJs") {
-        tasks["assemble"].dependsOn(this)
-    }
-}
-
-allprojects {
     afterEvaluate {
         val dependencies: List<Dependency> = project.configurations
-            .flatMap { it.allDependencies }
+            .getByName("js")
+            .allDependencies
             .filter { it is ProjectDependency }
 
         dependencies.forEach {
             project.tasks["buildJs"].dependsOn(":${it.name}:buildJs")
         }
+    }
+}
+
+subprojects {
+    task("buildJs") {
+        tasks["assemble"].dependsOn(this)
     }
 }
