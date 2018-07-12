@@ -1,7 +1,3 @@
-//val js by configurations.creating
-
-task("build") {
-    doLast {
-        println("Building the types component")
-    }
+tasks["buildJs"].doLast {
+    println("Building the types component. This should come first.")
 }

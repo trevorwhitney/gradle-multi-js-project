@@ -1,2 +1,2 @@
-include("components")
-include("types")
+include(":components")
+include(":types")

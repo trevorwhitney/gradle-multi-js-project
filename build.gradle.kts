@@ -1,10 +1,29 @@
-task("build") {
-    println("Building the parent multi-project")
-    println("Configurations: ${project.configurations.forEach { println(it) }}")
+plugins {
+    id("base")
 }
 
-project(":components") {
-    dependencies {
-        js(project(":types"))
+allprojects {
+    val js by configurations.creating
+
+    apply {
+        plugin("base")
+    }
+}
+
+subprojects {
+    task("buildJs") {
+        tasks["assemble"].dependsOn(this)
+    }
+}
+
+allprojects {
+    afterEvaluate {
+        val dependencies: List<Dependency> = project.configurations
+            .flatMap { it.allDependencies }
+            .filter { it is ProjectDependency }
+
+        dependencies.forEach {
+            project.tasks["buildJs"].dependsOn(":${it.name}:buildJs")
+        }
     }
 }
